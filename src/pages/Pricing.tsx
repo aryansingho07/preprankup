@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Check, Star, Zap, Crown, SlidersHorizontal } from 'lucide-react'
 import Navbar from '@/components/Navbar'
@@ -15,79 +15,171 @@ const categories: { id: Category; name: string }[] = [
 ]
 
 export default function Pricing() {
+    const [searchParams, setSearchParams] = useSearchParams()
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
-    const [activeCategory, setActiveCategory] = useState<Category>('CAT')
 
-    const plans = [
-        {
-            name: 'Starter',
-            description: `Perfect for testing the waters for ${activeCategory}`,
-            icon: Star,
-            price: { monthly: 0, yearly: 0 },
-            originalPrice: { monthly: null, yearly: null },
-            features: [
-                '5 Mock Tests per month',
-                'Basic score and percentile',
-                'Simple performance reports',
-                'Community forum access',
-                'Mobile app access',
-            ],
-            limitations: [
-                'No AI behavioral analysis',
-                'No personalized insights',
-                'Limited test history',
-            ],
-            cta: 'Start Free',
-            ctaVariant: 'outline' as const,
-            popular: false,
-            color: 'olive',
-        },
-        {
-            name: 'Pro',
-            description: `For serious ${activeCategory} aspirants ready to breakthrough`,
-            icon: Zap,
-            price: { monthly: 999, yearly: 799 },
-            originalPrice: { monthly: 1499, yearly: 1199 },
-            features: [
-                'Unlimited Mock Tests',
-                'Full AI SWOT Analysis by Athena',
-                'Hidden pattern detection (focus loss, pacing, etc.)',
-                'Performance vs. 1000+ students',
-                'Detailed weakness breakdown',
-                'Time management insights',
-                'Email support within 24 hours',
-                'Progress tracking dashboard',
-            ],
-            limitations: [],
-            cta: 'Subscribe to Pro',
-            ctaVariant: 'default' as const,
-            popular: true,
-            color: 'green',
-        },
-        {
-            name: 'Elite',
-            description: `Complete AI coaching for 95+ percentile in ${activeCategory}`,
-            icon: Crown,
-            price: { monthly: 1999, yearly: 1599 },
-            originalPrice: { monthly: 2999, yearly: 2399 },
-            features: [
-                'Everything in Pro',
-                'Weekly one-on-one AI coaching calls',
-                'Personalized daily study plans',
-                'Question-level difficulty optimization',
-                'Exam day strategy sessions',
-                'Priority phone support',
-                'Custom practice problem sets',
-                'Test anxiety management techniques',
-                'Dedicated success manager',
-            ],
-            limitations: [],
-            cta: 'Subscribe to Elite',
-            ctaVariant: 'default' as const,
-            popular: false,
-            color: 'purple',
-        },
-    ]
+    // Initialize category from URL or default to CAT
+    const initialCategory = (searchParams.get('category') as Category) || 'CAT'
+    const [activeCategory, setActiveCategory] = useState<Category>(initialCategory)
+
+    // Sync state with URL when category changes manually
+    const handleCategoryChange = (cat: Category) => {
+        setActiveCategory(cat)
+        setSearchParams({ category: cat })
+    }
+
+    // Update state if URL parameter changes (e.g., back button)
+    useEffect(() => {
+        const cat = searchParams.get('category') as Category
+        if (cat && categories.find(c => c.id === cat)) {
+            setActiveCategory(cat)
+        }
+    }, [searchParams])
+
+    const getPlans = (category: Category) => {
+        if (category === 'SSC') {
+            return [
+                {
+                    name: "Starter Pack",
+                    description: "Perfect for beginners to start their SSC journey",
+                    icon: Star,
+                    price: { monthly: 0, yearly: 0 },
+                    originalPrice: { monthly: null, yearly: null },
+                    features: [
+                        "2 Full-length Mock Tests",
+                        "Daily Sectional Quizzes",
+                        "Limited AI Analysis",
+                        "Registration Required",
+                        "Community Forum Access"
+                    ],
+                    limitations: [
+                        "No AI SWOT Analysis",
+                        "No PYQs Access",
+                        "Limited History"
+                    ],
+                    cta: "Start Free",
+                    ctaVariant: "outline" as const,
+                    popular: false,
+                    color: "olive"
+                },
+                {
+                    name: "Basic Pack",
+                    description: "Standard plan for serious SSC CGL/CHSL preparation",
+                    icon: Zap,
+                    price: { monthly: 499, yearly: 399 },
+                    originalPrice: { monthly: 699, yearly: 559 },
+                    features: [
+                        "50 Full-length Mock Tests",
+                        "Chapter-wise Practice Sets",
+                        "Basic AI Performance Insights",
+                        "Previous Year Questions (PYQs)",
+                        "All India Ranking",
+                        "Detailed score analysis"
+                    ],
+                    limitations: [],
+                    cta: "Get Basic",
+                    ctaVariant: "default" as const,
+                    popular: false,
+                    color: "green"
+                },
+                {
+                    name: "Ultimate Elite",
+                    description: "Full AI-powered preparation for top-tier SSC ranks",
+                    icon: Crown,
+                    price: { monthly: 999, yearly: 799 },
+                    originalPrice: { monthly: 1499, yearly: 1199 },
+                    features: [
+                        "Unlimited Mock Tests",
+                        "AI SWOT Analysis Report",
+                        "Detailed Behavioral Analytics",
+                        "Personalized Improvement Plan",
+                        "Priority Doubt Support",
+                        "All Upcoming SSC Exams Included",
+                        "Test Anxiety Management"
+                    ],
+                    limitations: [],
+                    cta: "Get Ultimate",
+                    ctaVariant: "default" as const,
+                    popular: true,
+                    color: "purple"
+                }
+            ]
+        }
+
+        // Generic plans for other categories
+        return [
+            {
+                name: 'Starter',
+                description: `Perfect for testing the waters for ${category}`,
+                icon: Star,
+                price: { monthly: 0, yearly: 0 },
+                originalPrice: { monthly: null, yearly: null },
+                features: [
+                    '5 Mock Tests per month',
+                    'Basic score and percentile',
+                    'Simple performance reports',
+                    'Community forum access',
+                    'Mobile app access',
+                ],
+                limitations: [
+                    'No AI behavioral analysis',
+                    'No personalized insights',
+                    'Limited test history',
+                ],
+                cta: 'Start Free',
+                ctaVariant: 'outline' as const,
+                popular: false,
+                color: 'olive',
+            },
+            {
+                name: 'Pro',
+                description: `For serious ${category} aspirants ready to breakthrough`,
+                icon: Zap,
+                price: { monthly: 999, yearly: 799 },
+                originalPrice: { monthly: 1499, yearly: 1199 },
+                features: [
+                    'Unlimited Mock Tests',
+                    'Full AI SWOT Analysis by Athena',
+                    'Hidden pattern detection (focus loss, pacing, etc.)',
+                    'Performance vs. 1000+ students',
+                    'Detailed weakness breakdown',
+                    'Time management insights',
+                    'Email support within 24 hours',
+                    'Progress tracking dashboard',
+                ],
+                limitations: [],
+                cta: 'Subscribe to Pro',
+                ctaVariant: 'default' as const,
+                popular: true,
+                color: 'green',
+            },
+            {
+                name: 'Elite',
+                description: `Complete AI coaching for 95+ percentile in ${category}`,
+                icon: Crown,
+                price: { monthly: 1999, yearly: 1599 },
+                originalPrice: { monthly: 2999, yearly: 2399 },
+                features: [
+                    'Everything in Pro',
+                    'Weekly one-on-one AI coaching calls',
+                    'Personalized daily study plans',
+                    'Question-level difficulty optimization',
+                    'Exam day strategy sessions',
+                    'Priority phone support',
+                    'Custom practice problem sets',
+                    'Test anxiety management techniques',
+                    'Dedicated success manager',
+                ],
+                limitations: [],
+                cta: 'Subscribe to Elite',
+                ctaVariant: 'default' as const,
+                popular: false,
+                color: 'purple',
+            },
+        ]
+    }
+
+    const plans = getPlans(activeCategory)
 
     const getColorClasses = (color: string, variant: 'bg' | 'text' | 'border' | 'hover') => {
         const colorMap = {
@@ -137,7 +229,7 @@ export default function Pricing() {
                             {categories.map((cat) => (
                                 <button
                                     key={cat.id}
-                                    onClick={() => setActiveCategory(cat.id)}
+                                    onClick={() => handleCategoryChange(cat.id)}
                                     className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 border ${activeCategory === cat.id
                                         ? 'bg-graphite-900 text-white border-graphite-900 shadow-md'
                                         : 'bg-white text-gray-600 border-gray-200 hover:border-olive hover:bg-olive/5'

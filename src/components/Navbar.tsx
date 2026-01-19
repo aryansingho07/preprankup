@@ -18,6 +18,8 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', href: '/' },
+    { name: 'SSC', href: '/ssc' },
+    { name: 'About SSC', href: '/about-ssc' },
     { name: 'Plans', href: '/plans' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Support', href: '/support' },
@@ -28,8 +30,8 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
-          ? 'bg-white/20 backdrop-blur-2xl shadow-lg border-b border-white/30 py-3'
-          : 'bg-white/10 backdrop-blur-xl py-5'
+        ? 'bg-white/20 backdrop-blur-2xl shadow-lg border-b border-white/30 py-3'
+        : 'bg-white/10 backdrop-blur-xl py-5'
         }`}
       style={{
         background: isScrolled
