@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { Check, Star, Zap, Crown, SlidersHorizontal } from 'lucide-react'
+import { SlidersHorizontal, Sparkles, ShieldCheck } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import PricingCard from '@/components/PricingCard'
 
-type Category = 'CAT' | 'SSC' | 'Bank' | 'UPSC'
+type Category = 'CAT' | 'SSC'
 
 const categories: { id: Category; name: string }[] = [
     { id: 'CAT', name: 'CAT / MBA' },
     { id: 'SSC', name: 'SSC CGL / CHSL' },
-    { id: 'Bank', name: 'Banking / IBPS' },
-    { id: 'UPSC', name: 'UPSC / CSAT' },
 ]
 
 export default function Pricing() {
@@ -37,202 +35,192 @@ export default function Pricing() {
     }, [searchParams])
 
     const getPlans = (category: Category) => {
-        if (category === 'SSC') {
+        if (category === 'CAT') {
             return [
                 {
-                    name: "Starter Pack",
-                    description: "Perfect for beginners to start their SSC journey",
-                    icon: Star,
-                    price: { monthly: 0, yearly: 0 },
-                    originalPrice: { monthly: null, yearly: null },
+                    title: "CAT Bootcamp Lite",
+                    subtitle: "Concentrated Mock Analysis",
+                    isOnline: true,
+                    language: "English",
+                    startDate: "Immediate",
+                    endDate: "30 Days Access",
+                    currentPrice: 499,
+                    originalPrice: 1999,
+                    discountPercent: 75,
+                    tokens: 10,
+                    batchOverlayText: "LITE BOOTCAMP",
                     features: [
-                        "2 Full-length Mock Tests",
-                        "Daily Sectional Quizzes",
-                        "Limited AI Analysis",
-                        "Registration Required",
-                        "Community Forum Access"
+                        "5 Premium CAT Mock Tests",
+                        "Essential AI Performance Analysis",
+                        "Basic Section-wise Insights",
+                        "Core Study Recommendations",
+                        "Question-wise Time Analysis",
+                        "Athena AI Coach Access",
+                        "Mobile & Desktop Access",
+                        "30 Days Unlimited Retakes"
                     ],
-                    limitations: [
-                        "No AI SWOT Analysis",
-                        "No PYQs Access",
-                        "Limited History"
-                    ],
-                    cta: "Start Free",
-                    ctaVariant: "outline" as const,
-                    popular: false,
-                    color: "olive"
+                    popular: false
                 },
                 {
-                    name: "Basic Pack",
-                    description: "Standard plan for serious SSC CGL/CHSL preparation",
-                    icon: Zap,
-                    price: { monthly: 499, yearly: 399 },
-                    originalPrice: { monthly: 699, yearly: 559 },
+                    title: "CAT Bootcamp Premium (30-Day)",
+                    subtitle: "Intensive 30-Day Training",
+                    isOnline: true,
+                    language: "Hinglish",
+                    startDate: "Immediate",
+                    endDate: "30 Days Access",
+                    currentPrice: 999,
+                    originalPrice: 3999,
+                    discountPercent: 75,
+                    tokens: 50,
+                    batchOverlayText: "30-DAY INTENSIVE",
                     features: [
-                        "50 Full-length Mock Tests",
-                        "Chapter-wise Practice Sets",
-                        "Basic AI Performance Insights",
-                        "Previous Year Questions (PYQs)",
-                        "All India Ranking",
-                        "Detailed score analysis"
+                        "15 Premium CAT Mock Tests",
+                        "AI-Powered Performance Analysis",
+                        "Detailed Section-wise Insights",
+                        "Personalized Study Recommendations",
+                        "Question-wise Time Analysis",
+                        "Athena AI Coach Access",
+                        "Mobile & Desktop Access",
+                        "30 Days Unlimited Retakes"
                     ],
-                    limitations: [],
-                    cta: "Get Basic",
-                    ctaVariant: "default" as const,
-                    popular: false,
-                    color: "green"
+                    popular: false
                 },
                 {
-                    name: "Ultimate Elite",
-                    description: "Full AI-powered preparation for top-tier SSC ranks",
-                    icon: Crown,
-                    price: { monthly: 999, yearly: 799 },
-                    originalPrice: { monthly: 1499, yearly: 1199 },
+                    title: "CAT Bootcamp Elite (60-Day)",
+                    subtitle: "Advanced Skill Optimization",
+                    isOnline: true,
+                    language: "Hinglish",
+                    startDate: "Immediate",
+                    endDate: "60 Days Access",
+                    currentPrice: 1999,
+                    originalPrice: 7999,
+                    discountPercent: 75,
+                    tokens: 150,
+                    batchOverlayText: "MOST POPULAR CHOICE",
                     features: [
-                        "Unlimited Mock Tests",
-                        "AI SWOT Analysis Report",
-                        "Detailed Behavioral Analytics",
-                        "Personalized Improvement Plan",
-                        "Priority Doubt Support",
-                        "All Upcoming SSC Exams Included",
-                        "Test Anxiety Management"
+                        "30 Premium CAT Mock Tests",
+                        "Advanced AI Performance Analytics",
+                        "Comparative Analysis with Toppers",
+                        "Weakness Identification & Remediation",
+                        "Speed vs Accuracy Optimization",
+                        "Priority Athena AI Coach Support",
+                        "Detailed Progress Tracking",
+                        "60 Days Unlimited Retakes",
+                        "Study Plan Customization"
                     ],
-                    limitations: [],
-                    cta: "Get Ultimate",
-                    ctaVariant: "default" as const,
-                    popular: true,
-                    color: "purple"
+                    popular: true
+                },
+                {
+                    title: "CAT Bootcamp Ultimate (90-Day)",
+                    subtitle: "Elite Strategic Intelligence",
+                    isOnline: true,
+                    language: "Hinglish",
+                    startDate: "Immediate",
+                    endDate: "90 Days Access",
+                    currentPrice: 2999,
+                    originalPrice: 11999,
+                    discountPercent: 75,
+                    tokens: 500,
+                    batchOverlayText: "ULTIMATE PERFORMANCE",
+                    features: [
+                        "45 Premium CAT Mock Tests",
+                        "Elite AI Performance Suite",
+                        "Percentile Prediction & Tracking",
+                        "Advanced Strategy Recommendations",
+                        "Mock Interview Preparation Tips",
+                        "VIP Athena AI Coach Access",
+                        "Weekly Performance Reports",
+                        "90 Days Unlimited Retakes",
+                        "Priority Support & Mentoring",
+                        "Exclusive Content Access"
+                    ],
+                    popular: false
                 }
             ]
         }
-
-        // Generic plans for other categories
+        // Default to SSC plans if not CAT
         return [
             {
-                name: 'Starter',
-                description: `Perfect for testing the waters for ${category}`,
-                icon: Star,
-                price: { monthly: 0, yearly: 0 },
-                originalPrice: { monthly: null, yearly: null },
-                features: [
-                    '5 Mock Tests per month',
-                    'Basic score and percentile',
-                    'Simple performance reports',
-                    'Community forum access',
-                    'Mobile app access',
-                ],
-                limitations: [
-                    'No AI behavioral analysis',
-                    'No personalized insights',
-                    'Limited test history',
-                ],
-                cta: 'Start Free',
-                ctaVariant: 'outline' as const,
-                popular: false,
-                color: 'olive',
+                title: "Surya SSC CGL 2026 (English Book)",
+                subtitle: "Complete Batch with Test Series",
+                isOnline: true,
+                language: "Hinglish",
+                startDate: "29 Jan, 2026",
+                endDate: "30 Mar, 2027",
+                currentPrice: 1699,
+                originalPrice: 3999,
+                discountPercent: 58,
+                tokens: 50,
+                batchOverlayText: "Tier 1 + Tier 2 Complete",
+                features: ["Full Syllabus", "100+ Tests", "Performance AI", "Token Rewards"],
+                popular: false
             },
             {
-                name: 'Pro',
-                description: `For serious ${category} aspirants ready to breakthrough`,
-                icon: Zap,
-                price: { monthly: 999, yearly: 799 },
-                originalPrice: { monthly: 1499, yearly: 1199 },
-                features: [
-                    'Unlimited Mock Tests',
-                    'Full AI SWOT Analysis by Athena',
-                    'Hidden pattern detection (focus loss, pacing, etc.)',
-                    'Performance vs. 1000+ students',
-                    'Detailed weakness breakdown',
-                    'Time management insights',
-                    'Email support within 24 hours',
-                    'Progress tracking dashboard',
-                ],
-                limitations: [],
-                cta: 'Subscribe to Pro',
-                ctaVariant: 'default' as const,
-                popular: true,
-                color: 'green',
+                title: "Kamyabi SSC CHSL 2026",
+                subtitle: "English Books included",
+                isOnline: true,
+                language: "Hinglish",
+                startDate: "29 Jan, 2026",
+                endDate: "30 Jun, 2027",
+                currentPrice: 1499,
+                originalPrice: 3749,
+                discountPercent: 60,
+                tokens: 100,
+                batchOverlayText: "Target SSC CHSL Rankers",
+                features: ["Maths Special", "Advanced AI Analysis", "Live Sessions", "Priority Support"],
+                popular: true
             },
             {
-                name: 'Elite',
-                description: `Complete AI coaching for 95+ percentile in ${category}`,
-                icon: Crown,
-                price: { monthly: 1999, yearly: 1599 },
-                originalPrice: { monthly: 2999, yearly: 2399 },
-                features: [
-                    'Everything in Pro',
-                    'Weekly one-on-one AI coaching calls',
-                    'Personalized daily study plans',
-                    'Question-level difficulty optimization',
-                    'Exam day strategy sessions',
-                    'Priority phone support',
-                    'Custom practice problem sets',
-                    'Test anxiety management techniques',
-                    'Dedicated success manager',
-                ],
-                limitations: [],
-                cta: 'Subscribe to Elite',
-                ctaVariant: 'default' as const,
-                popular: false,
-                color: 'purple',
-            },
+                title: "SSC Selection Post Phase XII",
+                subtitle: "Full Intensive Training",
+                isOnline: true,
+                language: "Hindi",
+                startDate: "15 Feb, 2026",
+                endDate: "15 Dec, 2026",
+                currentPrice: 1299,
+                originalPrice: 2999,
+                discountPercent: 56,
+                tokens: 500,
+                batchOverlayText: "INFINITY ACCESS INCLUDED",
+                features: ["Chapter-wise Tests", "Daily Quizzes", "Rank Prediction", "1-on-1 AI Mentoring"],
+                popular: false
+            }
         ]
     }
 
     const plans = getPlans(activeCategory)
 
-    const getColorClasses = (color: string, variant: 'bg' | 'text' | 'border' | 'hover') => {
-        const colorMap = {
-            olive: {
-                bg: 'bg-olive',
-                text: 'text-olive-dark',
-                border: 'border-olive',
-                hover: 'hover:bg-olive-dark',
-            },
-            green: {
-                bg: 'bg-emerald-500',
-                text: 'text-emerald-600',
-                border: 'border-emerald-500',
-                hover: 'hover:bg-emerald-600',
-            },
-            purple: {
-                bg: 'bg-purple-500',
-                text: 'text-purple-600',
-                border: 'border-purple-500',
-                hover: 'hover:bg-purple-600',
-            },
-        }
-        return colorMap[color as keyof typeof colorMap]?.[variant] || ''
-    }
-
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-[#F8FAFC]">
             <Navbar />
-            <section id="pricing" className="py-24 lg:py-32 bg-gradient-to-b from-gray-50 to-white w-full">
-                <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <section id="pricing" className="py-24 lg:py-32 w-full relative overflow-hidden">
+                {/* Background Decorations */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+                <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     {/* Enhanced Section Header */}
-                    <div className="text-center mb-16">
-                        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-graphite-900 via-olive-dark to-graphite-800 bg-clip-text text-transparent mb-6">
-                            Choose Your Success Plan
+                    <div className="text-center mb-20">
+                        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-graphite-900 mb-8 tracking-tighter">
+                            Your Path to <span className="text-[#5C5EE6]">Success</span>
                         </h1>
-                        <p className="text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto mb-12 leading-relaxed">
-                            Get started for free, then unlock advanced AI coaching as you progress.
-                            <span className="block mt-2 font-medium text-gray-700">All plans include our money-back guarantee.</span>
+                        <p className="text-xl text-gray-500 max-w-3xl mx-auto mb-16 font-bold leading-relaxed">
+                            Join thousands of students who have cracked their exams using PrepRankUp's Performance Intelligence.
                         </p>
 
                         {/* Category Filter */}
-                        <div className="flex flex-wrap justify-center gap-3 mb-10">
-                            <div className="flex items-center gap-2 mr-4 text-gray-500 font-medium">
-                                <SlidersHorizontal className="w-5 h-5" />
-                                <span>Exam Category:</span>
+                        <div className="flex flex-wrap justify-center gap-4 mb-12">
+                            <div className="flex items-center gap-3 mr-4 text-gray-400 font-black uppercase text-xs tracking-widest">
+                                <SlidersHorizontal className="w-4 h-4" />
+                                <span>Exam Category</span>
                             </div>
                             {categories.map((cat) => (
                                 <button
                                     key={cat.id}
                                     onClick={() => handleCategoryChange(cat.id)}
-                                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 border ${activeCategory === cat.id
-                                        ? 'bg-graphite-900 text-white border-graphite-900 shadow-md'
-                                        : 'bg-white text-gray-600 border-gray-200 hover:border-olive hover:bg-olive/5'
+                                    className={`px-8 py-4 rounded-2xl text-sm font-black transition-all duration-500 border-2 tracking-widest uppercase ${activeCategory === cat.id
+                                        ? 'bg-graphite-900 text-white border-graphite-900 shadow-xl shadow-graphite-900/20 active:scale-95'
+                                        : 'bg-white text-gray-500 border-gray-100 hover:border-[#5C5EE6] hover:text-[#5C5EE6]'
                                         }`}
                                 >
                                     {cat.name}
@@ -240,166 +228,47 @@ export default function Pricing() {
                             ))}
                         </div>
 
-                        {/* Enhanced Billing Toggle */}
-                        <div className="inline-flex items-center bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-2 shadow-lg">
-                            <button
-                                onClick={() => setBillingCycle('monthly')}
-                                className={`px-8 py-3 rounded-xl text-base font-semibold transition-all duration-300 ${billingCycle === 'monthly'
-                                    ? 'bg-graphite-900 text-white shadow-lg'
-                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                                    }`}
-                            >
-                                Monthly
-                            </button>
-                            <button
-                                onClick={() => setBillingCycle('yearly')}
-                                className={`px-8 py-3 rounded-xl text-base font-semibold transition-all duration-300 relative ${billingCycle === 'yearly'
-                                    ? 'bg-graphite-900 text-white shadow-lg'
-                                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                                    }`}
-                            >
-                                Yearly
-                                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">
-                                    20% off
-                                </span>
-                            </button>
+                        {/* Billing Toggle (Hidden for this specific layout as seen in image) */}
+                        <div className="bg-white/50 backdrop-blur-xl border border-gray-100 rounded-[2rem] p-4 inline-flex items-center gap-8 shadow-sm">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                                    <Sparkles size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <p className="text-xs font-black text-graphite-900 uppercase">One-Time Payment</p>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase">Access until course end</p>
+                                </div>
+                            </div>
+                            <div className="w-px h-10 bg-gray-200"></div>
+                            <p className="text-xs font-black text-[#5C5EE6] uppercase tracking-widest">Enroll Now for 2026 Batches</p>
                         </div>
                     </div>
 
-                    {/* Enhanced Pricing Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-6xl mx-auto">
-                        {plans.map((plan) => {
-                            const Icon = plan.icon
-                            const price = plan.price[billingCycle]
-                            const originalPrice = plan.originalPrice[billingCycle]
-
-                            return (
-                                <div
-                                    key={plan.name}
-                                    className={`relative bg-white/95 backdrop-blur-sm rounded-3xl border-2 transition-all duration-500 group ${plan.popular
-                                        ? 'border-green-400/50 shadow-2xl scale-100 md:scale-105 ring-4 ring-green-500/10'
-                                        : 'border-gray-200/50 hover:border-blue-300/50 shadow-lg hover:shadow-2xl hover:-translate-y-1'
-                                        }`}
-                                >
-                                    {/* Enhanced Popular Badge */}
-                                    {plan.popular && (
-                                        <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 z-10">
-                                            <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-3 rounded-2xl text-sm font-bold shadow-lg animate-pulse">
-                                                Most Popular
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="p-8 lg:p-10">
-                                        {/* Enhanced Plan Header */}
-                                        <div className="text-center mb-8 lg:mb-10">
-                                            <div className={`inline-flex items-center justify-center w-18 h-18 lg:w-20 lg:h-20 ${getColorClasses(plan.color, 'bg')} rounded-3xl mb-6 shadow-lg`}>
-                                                <Icon className="w-8 h-8 lg:w-10 lg:h-10 text-white" />
-                                            </div>
-                                            <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">{plan.name}</h3>
-                                            <p className="text-gray-600 text-base leading-relaxed">{plan.description}</p>
-                                        </div>
-
-                                        {/* Enhanced Pricing Display */}
-                                        <div className="text-center mb-8 lg:mb-10">
-                                            <div className="flex items-baseline justify-center">
-                                                <span className="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                                                    ₹{price.toLocaleString()}
-                                                </span>
-                                                {price > 0 && (
-                                                    <span className="text-gray-600 ml-3 text-lg lg:text-xl font-medium">
-                                                        /{billingCycle === 'monthly' ? 'month' : 'year'}
-                                                    </span>
-                                                )}
-                                            </div>
-                                            {originalPrice && originalPrice > price && (
-                                                <div className="flex items-center justify-center mt-3">
-                                                    <span className="text-gray-500 line-through text-xl mr-3">
-                                                        ₹{originalPrice.toLocaleString()}
-                                                    </span>
-                                                    <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg">
-                                                        Save ₹{(originalPrice - price).toLocaleString()}
-                                                    </span>
-                                                </div>
-                                            )}
-                                            {price === 0 && (
-                                                <div className="text-green-600 font-bold text-lg mt-3 flex items-center justify-center">
-                                                    <Star className="w-5 h-5 mr-2 fill-current" />
-                                                    Forever Free
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Enhanced Features List */}
-                                        <div className="space-y-4 mb-10">
-                                            {plan.features.map((feature, featureIndex) => (
-                                                <div key={featureIndex} className="flex items-start group/item">
-                                                    <Check className="w-6 h-6 text-green-500 flex-shrink-0 mt-1 mr-4 group-hover/item:scale-110 transition-transform duration-200" />
-                                                    <span className="text-gray-700 text-base leading-relaxed font-medium">{feature}</span>
-                                                </div>
-                                            ))}
-                                            {plan.limitations.map((limitation, limitIndex) => (
-                                                <div key={limitIndex} className="flex items-start opacity-50">
-                                                    <div className="w-6 h-6 flex-shrink-0 mt-1 mr-4">
-                                                        <div className="w-4 h-4 border-2 border-gray-400 rounded-sm mt-1 mx-auto"></div>
-                                                    </div>
-                                                    <span className="text-gray-500 text-base leading-relaxed">{limitation}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        {/* Enhanced CTA Button */}
-                                        <Link to="/register" className="block">
-                                            <Button
-                                                variant={plan.ctaVariant}
-                                                className={`w-full py-4 text-lg font-bold transition-all duration-300 relative overflow-hidden ${plan.ctaVariant === 'default'
-                                                    ? `bg-gradient-to-r ${plan.color === 'green' ? 'from-green-500 to-emerald-600' : plan.color === 'purple' ? 'from-purple-500 to-indigo-600' : 'from-blue-500 to-indigo-600'} text-white shadow-lg hover:shadow-xl`
-                                                    : `border-2 ${getColorClasses(plan.color, 'border')} ${getColorClasses(plan.color, 'text')} hover:bg-gray-50 hover:scale-[1.02]`
-                                                    } ${plan.popular ? 'ring-2 ring-green-400/50' : ''}`}
-                                            >
-                                                <span className="relative z-10 flex items-center justify-center">
-                                                    {plan.cta}
-                                                    {plan.popular && <Zap className="w-5 h-5 ml-2" />}
-                                                </span>
-                                            </Button>
-                                        </Link>
-
-                                        {/* Enhanced Additional Info */}
-                                        {plan.cta.includes('Free') && (
-                                            <p className="text-center text-sm text-gray-500 mt-4 font-medium">
-                                                ✨ No credit card required
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            )
-                        })}
+                    {/* New Pricing Cards Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-7xl mx-auto">
+                        {plans.map((plan, idx) => (
+                            <div key={idx} className={plan.popular ? 'lg:-mt-4 lg:mb-4' : ''}>
+                                <PricingCard {...plan} />
+                            </div>
+                        ))}
                     </div>
 
                     {/* Enhanced Money Back Guarantee */}
-                    <div className="text-center mt-20 p-10 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-3xl shadow-sm">
-                        <div className="max-w-3xl mx-auto">
-                            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mb-6 shadow-md">
-                                <Check className="w-8 h-8 text-white" />
+                    <div className="mt-32 max-w-4xl mx-auto bg-white rounded-[3rem] p-12 border border-black/5 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#5C5EE6]/5 blur-[100px] rounded-full group-hover:bg-[#5C5EE6]/10 transition-colors"></div>
+                        <div className="relative flex flex-col md:flex-row items-center gap-10">
+                            <div className="w-24 h-24 rounded-[2rem] bg-graphite-900 flex items-center justify-center shadow-2xl shadow-graphite-900/20 rotate-3 group-hover:rotate-0 transition-transform">
+                                <ShieldCheck className="w-12 h-12 text-[#5C5EE6]" />
                             </div>
-                            <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                                30-Day Money-Back Guarantee
-                            </h3>
-                            <p className="text-lg text-gray-600 leading-relaxed">
-                                Not satisfied with your score improvement? Get a full refund within 30 days.
-                                <span className="block mt-2 font-semibold text-blue-800">We're confident our AI coaching will help you achieve your {activeCategory} goals.</span>
-                            </p>
+                            <div className="flex-1 text-center md:text-left space-y-4">
+                                <h3 className="text-3xl font-black text-graphite-900 leading-tight">
+                                    100% Performance Improvement Guarantee
+                                </h3>
+                                <p className="text-gray-500 font-bold leading-relaxed">
+                                    If you don't see a significant improvement in your score patterns within 30 days of consistent use, we'll provide a full refund. No questions asked.
+                                </p>
+                            </div>
                         </div>
-                    </div>
-
-                    {/* FAQ Link */}
-                    <div className="text-center mt-8">
-                        <Link to="/faq" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors">
-                            Have questions about our plans?
-                            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                        </Link>
                     </div>
                 </div>
             </section>

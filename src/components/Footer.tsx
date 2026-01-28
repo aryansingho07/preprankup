@@ -29,6 +29,7 @@ const Footer = () => {
       case 'Support': return '/support';
       case 'Privacy Policy': return '/privacy';
       case 'Terms of Service': return '/terms';
+      case 'Cookies Policy': return '/cookies';
       case 'Home': return '/';
       default: return '#';
     }
@@ -161,6 +162,7 @@ const Footer = () => {
             <div className="flex items-center gap-6">
               <a href="/terms" className="hover:text-graphite-900 transition-colors">Terms & Conditions</a>
               <a href="/privacy" className="hover:text-graphite-900 transition-colors">Privacy Policy</a>
+              <a href="/cookies" className="hover:text-graphite-900 transition-colors">Cookies Policy</a>
             </div>
           </div>
         </div>

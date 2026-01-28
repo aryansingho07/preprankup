@@ -95,27 +95,31 @@ const AISection = () => {
 
           {/* Right: Features */}
           <div className="order-1 lg:order-2">
-            <div className="inline-flex items-center gap-2 bg-white shadow-md border border-graphite-100 px-4 py-2 rounded-full mb-6">
-              <Brain className="w-4 h-4 text-teal-600" />
-              <span className="text-sm font-medium text-graphite-600">What PrepRankUp Does</span>
+            <div className="inline-flex items-center gap-2 bg-olive/10 border border-olive/30 px-4 py-2 rounded-full mb-6 animate-pulse">
+              <Brain className="w-4 h-4 text-olive" />
+              <span className="text-sm font-black text-olive uppercase tracking-widest">What PrepRankUp Does</span>
             </div>
 
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-graphite-900 leading-tight">
+            <h2 className="font-display text-4xl md:text-6xl font-black mb-6 text-graphite-900 leading-tight tracking-tighter">
               Know Exactly What to
               <br />
-              <span className="text-olive">Change in Your Next Attempt</span>
+              <span className="text-olive underline decoration-olive/20 underline-offset-8">Change in Your Next Attempt</span>
             </h2>
-            <p className="text-graphite-700 text-base font-bold mb-6 italic">
-              अगला अटेम्प्ट बेहतर कैसे बनाना है — बिल्कुल स्पष्ट रूप से।
-            </p>
+            <div className="bg-olive/5 p-6 rounded-2xl border-l-4 border-olive mb-8">
+              <p className="text-xl text-olive-700 font-bold italic leading-relaxed">
+                अगला अटेम्प्ट बेहतर कैसे बनाना है — बिल्कुल स्पष्ट रूप से।
+              </p>
+            </div>
 
-            <p className="text-lg text-graphite-800 font-medium mb-4">
-              PrepRankUp is not a coaching platform. Not a content platform. It's a performance intelligence layer
+            <p className="text-xl text-graphite-800 font-bold mb-6 leading-relaxed">
+              PrepRankUp is not a coaching platform. <span className="text-olive">Not a content platform.</span> It's a performance intelligence layer
               that analyzes how you attempt an exam — not just how many marks you score.
             </p>
-            <p className="text-graphite-700 text-base font-bold mb-6 italic">
-              हम यह नहीं पूछते कि आपने क्या पढ़ा। हम यह समझते हैं कि आपने एग्जाम कैसे अटेम्प्ट किया।
-            </p>
+            <div className="bg-graphite-900 text-white p-6 rounded-2xl shadow-xl mb-8 group hover:scale-[1.02] transition-transform">
+              <p className="text-lg font-bold italic">
+                "हम यह नहीं पूछते कि आपने क्या पढ़ा। हम यह समझते हैं कि आपने एग्जाम कैसे अटेम्प्ट किया।"
+              </p>
+            </div>
             <p className="text-sm text-graphite-800 font-bold mb-8">
               <strong>What We Measure:</strong> Time spent per question, Question selection & skipping behavior,
               Accuracy under pressure, Section-wise pacing, Repeated decision mistakes.

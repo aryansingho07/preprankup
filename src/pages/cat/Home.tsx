@@ -10,7 +10,7 @@ import ClaritySection from './components/ClaritySection';
 import MockTestCTA from './components/MockTestCTA';
 import ExamFocusSection from './components/ExamFocusSection';
 import DifferentiatorSection from './components/DifferentiatorSection';
-import PlansSection from './components/PlansSection';
+import BootcampPlansSection from './components/BootcampPlansSection';
 import ClosingSection from './components/ClosingSection';
 
 // Easing function for smooth transitions
@@ -23,7 +23,7 @@ const interpolateColor = (color1: number[], color2: number[], factor: number): n
     return color1.map((c, i) => Math.round(c + (color2[i] - c) * factor));
 };
 
-const SSCHome = () => {
+const Home = () => {
     const [scrollProgress, setScrollProgress] = useState(0);
 
     const handleScroll = useCallback(() => {
@@ -38,7 +38,7 @@ const SSCHome = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [handleScroll]);
 
-    // Define color palette matching preprankup theme (from Index.tsx)
+    // Define color palette matching main page (pink/peach)
     const softPink = [255, 220, 225];
     const warmPeach = [255, 230, 220];
     const creamBase = [255, 252, 250];
@@ -71,7 +71,7 @@ const SSCHome = () => {
         >
             <Navbar />
             <div className="relative">
-                {/* Dynamic background layers (reusing preprankup logic) */}
+                {/* Dynamic background layers */}
                 <div
                     className="fixed inset-0 pointer-events-none z-0"
                     style={{
@@ -101,7 +101,7 @@ const SSCHome = () => {
                     <MockTestCTA />
                     <ExamFocusSection />
                     <DifferentiatorSection />
-                    <PlansSection />
+                    <BootcampPlansSection />
                     <ClosingSection />
                 </div>
             </div>
@@ -111,4 +111,4 @@ const SSCHome = () => {
     );
 };
 
-export default SSCHome;
+export default Home;

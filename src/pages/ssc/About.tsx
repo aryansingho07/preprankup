@@ -1,8 +1,81 @@
 import { useEffect, useState, useCallback } from 'react';
+import { cn } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FloatingMockTestCTA from '@/components/FloatingMockTestCTA';
-import { BookOpen, PieChart, Users, Award, ChevronRight, Building, Calendar, Users2, ShieldCheck, Briefcase, GraduationCap, CheckCircle, Lightbulb, Rocket, Target, TrendingUp, FileText, Heart, Shield } from 'lucide-react';
+import { BookOpen, PieChart, Users, Award, ChevronRight, Building, Calendar, Users2, ShieldCheck, Briefcase, GraduationCap, CheckCircle, Lightbulb, Rocket, Target, TrendingUp, FileText, Heart, Shield, HelpCircle, Check, ExternalLink, ArrowRight, Download, MousePointer2, Image as ImageIcon, CreditCard, Bell } from 'lucide-react';
+
+const APPLY_STEPS = [
+    {
+        title: "Visit the Official Site",
+        description: "Visit candidate portal on ssc.gov.in. Register as a new user by adding all necessary information. If already registered, log in using your username and password.",
+        icon: <ExternalLink className="text-blue-500" size={24} />,
+        tip: "Keep your Aadhaar/ID details ready for registration."
+    },
+    {
+        title: "Choose the Exam",
+        description: "Select the specific exam (CGL, CHSL, etc.) you wish to take from the dashboard. Start or complete your application form.",
+        icon: <MousePointer2 className="text-indigo-500" size={24} />,
+        tip: "Check eligibility criteria before applying."
+    },
+    {
+        title: "Upload Documents",
+        description: "Scan and upload necessary images (photo and signature) and academic documents as per the specified size and format.",
+        icon: <ImageIcon className="text-purple-500" size={24} />,
+        tip: "Photo should be recent with a plain background."
+    },
+    {
+        title: "Review Application",
+        description: "Carefully check all entered details and uploaded documents. Ensure everything is accurate before final submission.",
+        icon: <FileText className="text-emerald-500" size={24} />,
+        tip: "You cannot edit most fields after final submission."
+    },
+    {
+        title: "Submit Form",
+        description: "Click on the submit option. You will be redirected to the payment gateway for the examination fee.",
+        icon: <CheckCircle className="text-orange-500" size={24} />,
+        tip: "Note down your application number for future reference."
+    },
+    {
+        title: "Pay Examination Fee",
+        description: "General/OBC male candidates: Rs. 100. Female, SC, ST, PwD, and Ex-servicemen: No fee. Pay online via SBI or offline via branch.",
+        icon: <CreditCard className="text-rose-500" size={24} />,
+        tip: "Keep a copy of the payment receipt."
+    },
+    {
+        title: "Receive Confirmation",
+        description: "Once paid, you will receive a confirmation. Eligible candidates will get admit cards before the exam date.",
+        icon: <Bell className="text-cyan-500" size={24} />,
+        tip: "Keep monitoring ssc.gov.in for updates."
+    }
+];
+
+const SSC_FAQ = [
+    {
+        q: "What is SSC?",
+        a: "The Staff Selection Commission (SSC) is an organisation under the Government of India that recruits staff for various posts in ministries, departments, and subordinate offices. Candidates take SSC exams to work in prestigious government roles."
+    },
+    {
+        q: "Which SSC exams can I apply for?",
+        a: "You can apply for several exams including SSC CGL (Combined Graduate Level), SSC GD (Constable), SSC CHSL (Combined Higher Secondary Level), SSC JE (Junior Engineer), SSC CPO (Central Police Organisation), SSC MTS (Multitasking Staff), SSC Stenographer, and SSC JHT (Junior Hindi Translator)."
+    },
+    {
+        q: "How much is the SSC application fee?",
+        a: "The examination fee is typically Rs. 100 for male candidates in General and OBC categories. Female candidates, ex-servicemen, and candidates belonging to SC, ST, or PwD categories are exempt from paying the fee."
+    },
+    {
+        q: "How can I pay the examination fee?",
+        a: "You can pay the fee online through the SBI portal (using net banking, credit/debit cards) or offline by generating a challan and visiting any SBI branch."
+    },
+    {
+        q: "Where can I check the official details for SSC exams?",
+        a: "All official details, notifications, and application portals are available at the official website: ssc.gov.in (previously ssc.nic.in)."
+    },
+    {
+        q: "When will I get my admit card?",
+        a: "If you are eligible and your application is accepted, you will typically receive your admit card or be able to download it from the regional SSC website 10-15 days before the examination date."
+    }
+];
 
 // Easing function for smooth transitions
 const easeInOutCubic = (t: number): number => {
@@ -107,6 +180,74 @@ const CAREER_REASONS = [
     }
 ];
 
+const EXAM_TIMELINE = [
+    { exam: 'SSC CGL', release: 'Dec 23, 2021', submission: 'Jan 23, 2022', date: 'April, 2022' },
+    { exam: 'SSC GD', release: 'Feb 22, 2023', submission: 'March 31, 2023', date: 'June, 2023' },
+    { exam: 'SSC CHSL', release: 'Feb 1, 2022', submission: 'March 7, 2022', date: 'May, 2022' },
+    { exam: 'SSC JE', release: 'Nov 28, 2022', submission: 'Dec 27, 2022', date: 'March, 2023' },
+    { exam: 'SSC CPO', release: 'August, 2022', submission: 'Sept, 2022', date: 'Dec, 2022' },
+    { exam: 'SSC MTS', release: 'March 22, 2022', submission: 'April 30, 2022', date: 'June, 2022' },
+    { exam: 'SSC Stenographer', release: 'Dec 5, 2022', submission: 'Dec 31, 2022', date: 'April, 2023' },
+    { exam: 'SSC JHT', release: 'August 22, 2022', submission: 'Sept 21, 2022', date: 'Dec, 2022' }
+];
+
+const DETAILED_SYLLABUS = [
+    {
+        exam: "SSC CGL",
+        tiers: [
+            {
+                title: "Tier I (Qualifying)",
+                subjects: [
+                    { name: "General Intelligence & Reasoning", topics: "Analogies, Symbolic/Number Classification, Space Orientation, Semantic Series, Figural Classification, Punched hole/pattern-folding & unfolding." },
+                    { name: "General Awareness", topics: "Current Events, India and its neighboring countries, History, Culture, Geography, Economic Scene, General Policy & Scientific Research." },
+                    { name: "Quantitative Aptitude", topics: "Computation of whole numbers, Decimals, Fractions, Relationships between numbers, Profit & Loss, Discount, Partnership Business, Mixture & Alligation." },
+                    { name: "English Comprehension", topics: "Candidates' ability to understand correct English, his basic comprehension and writing ability, etc. would be tested." }
+                ]
+            },
+            {
+                title: "Tier II (Mains)",
+                subjects: [
+                    { name: "Mathematical Abilities", topics: "Number Systems, Fundamental arithmetical operations, Algebra, Geometry, Mensuration, Trigonometry, Statistics and Probability." },
+                    { name: "Reasoning & General Intelligence", topics: "Semantic Analogy, Symbolic operations, Symbolic/ Number Analogy, Trends, Figural Analogy, Space Orientation." },
+                    { name: "English Language & Comprehension", topics: "Vocabulary, grammar, sentence structure, synonyms, antonyms and its correct usage; Spot the Error, Fill in the Blanks." }
+                ]
+            }
+        ]
+    },
+    {
+        exam: "SSC GD",
+        tiers: [
+            {
+                title: "Computer Based Exam",
+                subjects: [
+                    { name: "Intelligence & Reasoning", topics: "Analogies, Similarities and differences, spatial visualization, spatial orientation, visual memory." },
+                    { name: "General Knowledge", topics: "History, Culture, Geography, Economic Scene, General Polity, Indian Constitution, Scientific Research." },
+                    { name: "Elementary Mathematics", topics: "Number Systems, Computation of Whole Numbers, Decimals and Fractions, Fundamental arithmetical operations." }
+                ]
+            }
+        ]
+    },
+    {
+        exam: "SSC CHSL",
+        tiers: [
+            {
+                title: "Tier I (Objective)",
+                subjects: [
+                    { name: "English Language", topics: "Spot the Error, Fill in the Blanks, Synonyms/ Homonyms, Antonyms, Spellings/ Detecting mis-spelt words." },
+                    { name: "General Intelligence", topics: "Semantic Analogy, Symbolic operations, Symbolic/Number Analogy, Trends, Figural Analogy, Space Orientation." }
+                ]
+            },
+            {
+                title: "Tier II (Session I)",
+                subjects: [
+                    { name: "Maths & Reasoning", topics: "Number Systems, Fundamental arithmetical operations, Algebra, Geometry, Mensuration, Trigonometry." },
+                    { name: "English & GA", topics: "Vocabulary, grammar, sentence structure, synonyms, antonyms; History, Culture, Geography, Economic Scene." }
+                ]
+            }
+        ]
+    }
+];
+
 const EXAM_DETAILS = [
     {
         name: "CGL Exam",
@@ -152,7 +293,86 @@ const EXAM_DETAILS = [
     }
 ];
 
+const ELIGIBILITY_DATA = [
+    {
+        exam: "SSC CGL",
+        criteria: [
+            { label: "Citizenship", value: "Indian, Nepal, Bhutan, or Tibetan Refugee (pre-1962)" },
+            { label: "Age", value: "18-32 Years (depends on post)" },
+            { label: "Education", value: "Bachelor's Degree from a recognized university" },
+            { label: "Special", value: "JSO: 60% in 12th Math or Bachelor's with Stats" }
+        ]
+    },
+    {
+        exam: "SSC GD",
+        criteria: [
+            { label: "Citizenship", value: "Citizen of India" },
+            { label: "Age", value: "18-23 Years" },
+            { label: "Education", value: "10th Standard pass from recognized board" }
+        ]
+    },
+    {
+        exam: "SSC CHSL",
+        criteria: [
+            { label: "Citizenship", value: "Indian, Nepal, Bhutan, or Tibetan Refugee" },
+            { label: "Age", value: "18-27 Years" },
+            { label: "Education", value: "12th Standard pass from recognized board" }
+        ]
+    },
+    {
+        exam: "SSC JE",
+        criteria: [
+            { label: "Citizenship", value: "Indian, Nepal, or Bhutan" },
+            { label: "Age", value: "Max 30-32 Years (depends on department)" },
+            { label: "Education", value: "Degree/Diploma in Civil/Mech/Electrical Engineering" }
+        ]
+    }
+];
+
+const DETAILED_PATTERNS = [
+    {
+        exam: 'SSC CGL',
+        details: 'Four tiers. Tier I & II online (MCQ), Tier III pen-paper (Descriptive), Tier IV Skill Test.',
+        table: [
+            { stage: 'Tier I', info: 'Objective MCQ (100 Qs, 4 Sections). Computer-based.' },
+            { stage: 'Tier II', info: 'Paper 1: English (200 marks), Paper 2: Quant (200 marks).' },
+            { stage: 'Tier III', info: 'Written (Hindi/English, 100 marks). Descriptive.' },
+            { stage: 'Tier IV', info: 'Skill test or document verification.' }
+        ]
+    },
+    {
+        exam: 'SSC GD',
+        details: 'CBT, PET, PST, and Medical Test.',
+        table: [
+            { stage: 'Stage 1', info: 'Objective MCQ (100 Qs). Subjects: Math, Reasoning, GS, Hindi/English.' },
+            { stage: 'Stage 2', info: 'Physical Standard Test (PST).' },
+            { stage: 'Stage 3', info: 'Medical Check-up & Physical Endurance (PET).' }
+        ]
+    },
+    {
+        exam: 'SSC CHSL',
+        details: 'Three tiers. Online MCQ, Pen-paper, and Skill Test.',
+        table: [
+            { stage: 'Tier I', info: 'Objective MCQ (100 Qs, 200 Marks). Computer-based.' },
+            { stage: 'Tier II', info: 'Written test. Descriptive questions.' },
+            { stage: 'Tier III', info: 'Skills test or typing speed evaluation.' }
+        ]
+    }
+];
+
+const TOC_ITEMS = [
+    { id: 'intro', label: 'What is SSC?', icon: ShieldCheck },
+    { id: 'apply', label: 'How to Apply?', icon: MousePointer2 },
+    { id: 'patterns', label: 'Exam Patterns', icon: PieChart },
+    { id: 'eligibility', label: 'Eligibility', icon: GraduationCap },
+    { id: 'dates', label: 'Exam Dates', icon: Calendar },
+    { id: 'syllabus', label: 'Syllabus', icon: BookOpen },
+    { id: 'faq', label: 'Common FAQs', icon: HelpCircle }
+];
 const AboutSSC = () => {
+    const [activePatternTab, setActivePatternTab] = useState(0);
+    const [activeSyllabusTab, setActiveSyllabusTab] = useState(0);
+    const [activeSection, setActiveSection] = useState('intro');
     const [scrollProgress, setScrollProgress] = useState(0);
 
     const handleScroll = useCallback(() => {
@@ -220,371 +440,349 @@ const AboutSSC = () => {
                 />
 
                 <div className="container mx-auto px-4 relative z-10">
-                    <div className="max-w-4xl mx-auto">
-                        {/* Header section */}
-                        <div className="text-center mb-20 animate-fade-in">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-100 bg-blue-50 text-blue-700 mb-6 shadow-sm hover:scale-105 transition-transform cursor-default">
-                                <Rocket size={18} />
-                                <span className="text-sm font-bold tracking-wide uppercase">SSC INSIGHT HUB</span>
-                            </div>
-                            <h1 className="text-4xl md:text-7xl font-display font-bold text-graphite-900 mb-6 leading-tight">
-                                All About <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">SSC Exams</span>
-                            </h1>
-                            <p className="text-xl text-graphite-600 font-semibold leading-relaxed max-w-2xl mx-auto">
-                                Everything you need to know about the Staff Selection Commission, its functions, and recruitment process.
-                            </p>
-                        </div>
-
-                        {/* Introduction Card */}
-                        <div className="bg-white/80 backdrop-blur-xl border border-white p-8 md:p-12 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] mb-12 transform transition-all hover:scale-[1.01] relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-blue-100 transition-colors"></div>
-                            <div className="flex flex-col md:flex-row items-start gap-8 relative z-10">
-                                <div className="w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-blue-600 to-indigo-600 flex-shrink-0 flex items-center justify-center shadow-xl shadow-blue-200 group-hover:rotate-3 transition-transform">
-                                    <ShieldCheck className="text-white" size={40} />
+                    <div className="flex flex-col lg:flex-row gap-12 max-w-7xl mx-auto">
+                        {/* Sticky Sidebar - Desktop Only */}
+                        <aside className="hidden lg:block w-72 flex-shrink-0">
+                            <div className="sticky top-32 space-y-4">
+                                <div className="bg-white/40 backdrop-blur-xl border border-white/60 rounded-3xl p-6 shadow-sm">
+                                    <h3 className="text-sm font-black text-graphite-900 uppercase tracking-widest mb-6 px-2">Table of Contents</h3>
+                                    <nav className="space-y-1">
+                                        {TOC_ITEMS.map((item) => (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => {
+                                                    document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                                    setActiveSection(item.id);
+                                                }}
+                                                className={cn(
+                                                    "w-full flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-bold transition-all duration-300",
+                                                    activeSection === item.id
+                                                        ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+                                                        : "text-graphite-500 hover:bg-white/60 hover:text-blue-600"
+                                                )}
+                                            >
+                                                <item.icon size={18} />
+                                                {item.label}
+                                            </button>
+                                        ))}
+                                    </nav>
                                 </div>
-                                <div className="space-y-4">
-                                    <h2 className="text-3xl font-bold text-graphite-900">What is SSC?</h2>
-                                    <p className="text-graphite-700 leading-relaxed font-semibold">
-                                        The <span className="text-blue-600 font-bold">Staff Selection Commission (SSC)</span> is an organization under the Government of India to recruit staff for various posts in the various Ministries and Departments.
-                                    </p>
-                                    <p className="text-graphite-600 leading-relaxed text-sm font-medium">
-                                        A job under the SSC is considered one of the most prestigious jobs in the country. With excellent perks, emoluments, and esteem, these jobs are highly sought after, with over 14 lakh+ candidates appearing annually.
-                                    </p>
+
+                                <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 text-white shadow-xl">
+                                    <h4 className="font-bold mb-2">Ready to Start?</h4>
+                                    <p className="text-xs text-white/80 mb-4 leading-relaxed">Practice with our AI-driven mock tests designed for SSC success.</p>
+                                    <button className="w-full py-3 bg-white text-blue-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-blue-50 transition-colors">Start Mock Test</button>
                                 </div>
                             </div>
-                        </div>
+                        </aside>
 
-                        {/* Why Choose SSC Section */}
-                        <div className="mb-20">
-                            <div className="text-center mb-12">
-                                <h2 className="text-3xl font-display font-bold text-graphite-900 mb-4">Why a Career in SSC?</h2>
-                                <p className="text-graphite-600 font-medium max-w-2xl mx-auto">Explore the advantages that make SSC jobs some of the most desired career paths in India.</p>
+                        {/* Main Content Area */}
+                        <div className="flex-grow max-w-4xl space-y-24 pb-20">
+                            {/* Header section */}
+                            <div id="intro" className="text-center lg:text-left pt-8">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-100 bg-blue-50 text-blue-700 mb-6 shadow-sm hover:scale-105 transition-transform cursor-default">
+                                    <Rocket size={18} />
+                                    <span className="text-sm font-bold tracking-wide uppercase">SSC INSIGHT HUB</span>
+                                </div>
+                                <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-graphite-900 mb-6 leading-tight">
+                                    All About <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">SSC Exams</span>
+                                </h1>
+                                <p className="text-xl text-graphite-600 font-semibold leading-relaxed max-w-2xl">
+                                    Everything you need to know about the Staff Selection Commission, its functions, and recruitment process.
+                                </p>
                             </div>
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {CAREER_REASONS.map((reason, i) => (
-                                    <div key={i} className="bg-white/80 backdrop-blur-md p-8 rounded-[2rem] border border-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
-                                        <div className="mb-4 p-3 bg-white rounded-2xl w-fit shadow-inner group-hover:scale-110 transition-transform">
-                                            {reason.icon}
-                                        </div>
-                                        <h3 className="text-lg font-bold text-graphite-900 mb-2">{reason.title}</h3>
-                                        <p className="text-sm text-graphite-600 leading-relaxed font-medium">{reason.desc}</p>
+
+                            {/* Introduction Card */}
+                            <div className="bg-white/80 backdrop-blur-xl border border-white p-8 md:p-12 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] mb-12 transform transition-all hover:scale-[1.01] relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-blue-100 transition-colors"></div>
+                                <div className="flex flex-col md:flex-row items-start gap-8 relative z-10">
+                                    <div className="w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-blue-600 to-indigo-600 flex-shrink-0 flex items-center justify-center shadow-xl shadow-blue-200 group-hover:rotate-3 transition-transform">
+                                        <ShieldCheck className="text-white" size={40} />
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Benefits Section from Ref UI */}
-                        <div className="mb-20">
-                            <div className="text-center mb-10">
-                                <h3 className="text-2xl font-bold text-graphite-900 mb-2">Why Prepare with PrepRankUp?</h3>
-                                <p className="text-graphite-500 font-medium font-hindi">आपकी सफलता के लिए हमारी विशेषताएं</p>
-                            </div>
-                            <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {BENEFITS.map((benefit, index) => (
-                                    <li key={index} className="flex items-start gap-3 bg-white/60 backdrop-blur-md rounded-2xl p-5 border border-white shadow-sm hover:shadow-md hover:bg-white transition-all group">
-                                        <CheckCircle size={20} className={`${benefit.color} flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform`} />
-                                        <div>
-                                            <span className="text-graphite-900 font-bold text-sm block mb-1 leading-tight">{benefit.en}</span>
-                                            <span className="block text-xs text-graphite-400 font-hindi">{benefit.hi}</span>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* History Section Grid */}
-                        <div className="grid md:grid-cols-2 gap-8 mb-16">
-                            <div className="bg-white/60 backdrop-blur-lg p-8 rounded-3xl border border-white/60 shadow-sm hover:shadow-md transition-all">
-                                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-6 border border-indigo-100">
-                                    <Calendar size={24} />
-                                </div>
-                                <h3 className="text-xl font-bold text-graphite-900 mb-4">Foundation</h3>
-                                <p className="text-graphite-600 text-sm leading-relaxed">
-                                    Recommended by the Estimates Committee in its 47th Report (1967-68) for recruitment to lower category posts. Formed as Subordinate Service Commission on 4 November 1975.
-                                </p>
-                            </div>
-                            <div className="bg-white/60 backdrop-blur-lg p-8 rounded-3xl border border-white/60 shadow-sm hover:shadow-md transition-all">
-                                <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6 border border-emerald-100">
-                                    <Building size={24} />
-                                </div>
-                                <h3 className="text-xl font-bold text-graphite-900 mb-4">Evolution</h3>
-                                <p className="text-graphite-600 text-sm leading-relaxed">
-                                    Renamed as Staff Selection Commission on 26 September 1977. Headquartered in New Delhi with seven regional offices across India for smooth exam conduct.
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Exam Pattern Table (Image 1 Data) */}
-                        <div className="mb-20">
-                            <div className="flex items-center gap-3 mb-8">
-                                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <PieChart className="text-white" size={20} />
-                                </div>
-                                <h2 className="text-3xl font-display font-bold text-graphite-900">Exam Pattern & Tiers</h2>
-                            </div>
-
-                            <div className="bg-white/90 backdrop-blur-2xl border border-white rounded-[2rem] overflow-hidden shadow-2xl">
-                                <div className="bg-graphite-900 text-white p-6">
-                                    <h3 className="text-lg font-bold">Tier - I Examination Structure</h3>
-                                    <p className="text-white/60 text-xs">Computer Based Written Examination (Objective MCQ)</p>
-                                </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left">
-                                        <thead>
-                                            <tr className="bg-graphite-50/50 border-b border-graphite-100">
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider">Subject</th>
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider text-center">Qs</th>
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider text-center">Marks</th>
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider">Duration</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-graphite-50">
-                                            {TIER_I_DATA.map((row, i) => (
-                                                <tr key={i} className="hover:bg-blue-50/50 transition-colors group">
-                                                    <td className="px-6 py-5 text-sm font-bold text-graphite-700 group-hover:text-blue-600">{row.subject}</td>
-                                                    <td className="px-6 py-5 text-sm font-bold text-graphite-900 text-center">{row.qs}</td>
-                                                    <td className="px-6 py-5 text-sm font-black text-blue-600 text-center">{row.marks}</td>
-                                                    <td className="px-6 py-5 text-sm text-graphite-500 font-bold">{row.duration}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="p-6 bg-blue-50/30 border-t border-white">
-                                    <ul className="space-y-2">
-                                        <li className="flex items-center gap-2 text-xs text-graphite-600 font-medium">
-                                            <ChevronRight size={14} className="text-blue-500" />
-                                            Negative marking: 0.5 marks per wrong answer
-                                        </li>
-                                        <li className="flex items-center gap-2 text-xs text-graphite-600 font-medium">
-                                            <ChevronRight size={14} className="text-blue-500" />
-                                            Questions will be objective type MCQs in Hindi/English
-                                        </li>
-                                    </ul>
+                                    <div className="space-y-4">
+                                        <h2 className="text-3xl font-bold text-graphite-900">What is SSC?</h2>
+                                        <p className="text-graphite-700 leading-relaxed font-semibold">
+                                            The <span className="text-blue-600 font-bold">Staff Selection Commission (SSC)</span> is an organization under the Government of India to recruit staff for various posts in the various Ministries and Departments.
+                                        </p>
+                                        <p className="text-graphite-600 leading-relaxed text-sm font-medium">
+                                            A job under the SSC is considered one of the most prestigious jobs in the country. With excellent perks, emoluments, and esteem, these jobs are highly sought after, with over 14 lakh+ candidates appearing annually.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Tier - II Pattern */}
-                            <div className="mt-12 bg-white/90 backdrop-blur-2xl border border-white rounded-[2rem] overflow-hidden shadow-2xl animate-fade-in">
-                                <div className="bg-graphite-900 text-white p-6">
-                                    <h3 className="text-lg font-bold">Tier - II Examination Structure</h3>
-                                    <p className="text-white/60 text-xs">Computer Based Written Examination (MCQ + Data Entry)</p>
+                            {/* How to Apply Section */}
+                            <section id="apply" className="scroll-mt-32">
+                                <div className="flex items-center gap-3 mb-10">
+                                    <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-100">
+                                        <MousePointer2 className="text-white" size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-3xl font-display font-bold text-graphite-900">How to Apply for SSC?</h2>
+                                        <p className="text-sm text-graphite-500 font-medium font-hindi">एसएससी के लिए आवेदन कैसे करें?</p>
+                                    </div>
                                 </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left">
-                                        <thead>
-                                            <tr className="bg-graphite-50/50 border-b border-graphite-100">
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider">Paper/Section</th>
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider">Subject</th>
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider text-center">Qs</th>
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider text-center">Marks</th>
-                                                <th className="px-6 py-4 text-xs font-bold text-graphite-400 uppercase tracking-wider">Duration</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-graphite-50">
-                                            {TIER_II_DATA.map((row, i) => (
-                                                <tr key={i} className="hover:bg-blue-50/50 transition-colors group">
-                                                    <td className="px-6 py-5 text-sm font-black text-graphite-900">{row.paper}</td>
-                                                    <td className="px-6 py-5 text-sm font-bold text-graphite-700 group-hover:text-blue-600">{row.subject}</td>
-                                                    <td className="px-6 py-5 text-sm font-bold text-graphite-900 text-center">{row.qs}</td>
-                                                    <td className="px-6 py-5 text-sm font-black text-blue-600 text-center">{row.marks}</td>
-                                                    <td className="px-6 py-5 text-sm text-graphite-500 font-bold">{row.duration}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
 
-                        {/* Major Functions Section */}
-                        <div className="mb-20">
-                            <div className="bg-white/80 backdrop-blur-xl border border-white p-8 md:p-12 rounded-[2.5rem] shadow-sm">
-                                <h2 className="text-2xl font-bold text-graphite-900 mb-6 flex items-center gap-3">
-                                    <Award className="text-orange-500" size={28} />
-                                    Major Functions of SSC
-                                </h2>
-                                <div className="grid sm:grid-cols-2 gap-6">
-                                    {SSC_FUNCTIONS.map((func, i) => (
-                                        <div key={i} className="flex gap-4 p-4 bg-graphite-50/50 rounded-2xl border border-graphite-100">
-                                            <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0">{i + 1}</div>
-                                            <p className="text-sm text-graphite-600 font-medium">{func}</p>
+                                <div className="space-y-6 relative">
+                                    <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-500/50 via-indigo-500/20 to-transparent md:left-8"></div>
+
+                                    {APPLY_STEPS.map((step, i) => (
+                                        <div key={i} className="relative pl-14 md:pl-20 group">
+                                            <div className="absolute left-0 top-0 w-12 h-12 bg-white border-2 border-indigo-50 rounded-2xl flex items-center justify-center z-10 shadow-sm group-hover:border-indigo-500 group-hover:shadow-md transition-all md:w-16 md:h-16">
+                                                {step.icon}
+                                            </div>
+                                            <div className="bg-white/60 backdrop-blur-md rounded-[2rem] p-6 border border-white/80 shadow-sm hover:shadow-md transition-all">
+                                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+                                                    <h3 className="text-lg font-bold text-graphite-900">Step {i + 1}: {step.title}</h3>
+                                                    <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">Official Process</span>
+                                                </div>
+                                                <p className="text-sm text-graphite-600 font-medium leading-relaxed mb-4">{step.description}</p>
+                                                <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 w-fit px-3 py-1.5 rounded-xl">
+                                                    <Lightbulb size={14} />
+                                                    Pro-Tip: {step.tip}
+                                                </div>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
-                            </div>
-                        </div>
+                            </section>
 
-                        {/* Vacancy Data */}
-                        <div className="mb-20">
-                            <div className="flex items-center gap-3 mb-8">
-                                <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                                    <Users2 className="text-white" size={20} />
-                                </div>
-                                <h2 className="text-3xl font-display font-bold text-graphite-900">Recent Vacancies</h2>
-                            </div>
-
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                {VACANCY_DATA.map((item, i) => (
-                                    <div key={i} className="bg-white/80 backdrop-blur-md p-6 rounded-[2rem] border border-white shadow-sm flex flex-col items-center hover:shadow-xl hover:-translate-y-1 transition-all group">
-                                        <span className="text-xs font-bold text-graphite-400 mb-2">{item.year}</span>
-                                        <div className="text-center">
-                                            <p className="text-2xl font-black font-display text-blue-600 group-hover:scale-110 transition-transform">{item.cgl}</p>
-                                            <p className="text-[10px] uppercase font-bold text-graphite-400">SSC CGL</p>
-                                        </div>
-                                        <div className="mt-3 text-center border-t border-graphite-50 pt-3 w-full">
-                                            <p className="text-2xl font-black font-display text-emerald-600 group-hover:scale-110 transition-transform">{item.chsl}</p>
-                                            <p className="text-[10px] uppercase font-bold text-graphite-400">SSC CHSL</p>
-                                        </div>
+                            {/* Exam Pattern Section */}
+                            <section id="patterns" className="scroll-mt-32">
+                                <div className="flex items-center gap-3 mb-10">
+                                    <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-100">
+                                        <PieChart className="text-white" size={24} />
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Posts & Roles */}
-                        <div className="mb-20">
-                            <div className="flex items-center gap-3 mb-8">
-                                <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <Briefcase className="text-white" size={20} />
-                                </div>
-                                <h2 className="text-3xl font-display font-bold text-graphite-900">Major Roles & Posts</h2>
-                            </div>
-
-                            <div className="space-y-6">
-                                {/* Group B */}
-                                <div className="bg-white/60 backdrop-blur-md p-8 rounded-[2rem] border border-white">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <span className="bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Group B</span>
-                                        <h3 className="text-xl font-bold text-graphite-900">Premium Roles (Level 7/6)</h3>
+                                    <div>
+                                        <h2 className="text-3xl font-display font-bold text-graphite-900">SSC Exam Patterns</h2>
+                                        <p className="text-sm text-graphite-500 font-medium font-hindi">एसएससी परीक्षा पैटर्न</p>
                                     </div>
-                                    <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3">
-                                        {GROUP_B_POSTS.map((post, i) => (
-                                            <div key={i} className="flex items-center gap-3 p-3 bg-white/40 rounded-xl border border-white/50">
-                                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                                <span className="text-sm font-medium text-graphite-700">{post}</span>
-                                            </div>
+                                </div>
+
+                                <div className="bg-white/80 backdrop-blur-xl border border-white/80 rounded-[2.5rem] shadow-xl overflow-hidden">
+                                    {/* Tabs */}
+                                    <div className="flex overflow-x-auto no-scrollbar border-b border-graphite-100 bg-graphite-50/30">
+                                        {DETAILED_PATTERNS.map((p, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => setActivePatternTab(i)}
+                                                className={cn(
+                                                    "px-8 py-5 text-sm font-bold whitespace-nowrap transition-all relative",
+                                                    activePatternTab === i
+                                                        ? "text-blue-600"
+                                                        : "text-graphite-400 hover:text-graphite-600"
+                                                )}
+                                            >
+                                                {p.exam}
+                                                {activePatternTab === i && (
+                                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600"></div>
+                                                )}
+                                            </button>
                                         ))}
                                     </div>
-                                </div>
 
-                                {/* Group C */}
-                                <div className="bg-white/60 backdrop-blur-md p-8 rounded-[2rem] border border-white">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <span className="bg-graphite-900 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Group C</span>
-                                        <h3 className="text-xl font-bold text-graphite-900">Support Roles (Level 5/4)</h3>
-                                    </div>
-                                    <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3">
-                                        {GROUP_C_POSTS.map((post, i) => (
-                                            <div key={i} className="flex items-center gap-3 p-3 bg-white/40 rounded-xl border border-white/50">
-                                                <div className="w-2 h-2 bg-graphite-400 rounded-full"></div>
-                                                <span className="text-sm font-medium text-graphite-700">{post}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* List of SSC Examinations */}
-                        <div className="mb-20">
-                            <div className="flex items-center justify-between mb-8">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                                        <FileText className="text-white" size={20} />
-                                    </div>
-                                    <h2 className="text-3xl font-display font-bold text-graphite-900">List of SSC Examinations</h2>
-                                </div>
-                            </div>
-                            <div className="grid gap-4">
-                                {EXAM_DETAILS.map((exam, i) => (
-                                    <div key={i} className="bg-white/70 backdrop-blur-md p-6 rounded-3xl border border-white hover:bg-white transition-all group flex flex-col md:flex-row gap-6 items-start md:items-center">
-                                        <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                                            {exam.icon}
+                                    <div className="p-8">
+                                        <div className="mb-8">
+                                            <p className="text-sm text-graphite-600 font-medium leading-relaxed bg-blue-50/50 p-4 rounded-2xl border border-blue-100/50 italic">
+                                                {DETAILED_PATTERNS[activePatternTab].details}
+                                            </p>
                                         </div>
-                                        <div className="flex-grow">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="text-lg font-bold text-graphite-900">{exam.name}</h3>
-                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 uppercase tracking-wider">{exam.fullName}</span>
-                                            </div>
-                                            <p className="text-sm text-graphite-600 font-medium leading-relaxed">{exam.desc}</p>
-                                        </div>
-                                        <ChevronRight className="text-graphite-300 md:block hidden group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" size={20} />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
 
-                        {/* SSC Syllabus Section */}
-                        <div className="mb-20">
-                            <div className="bg-white/80 backdrop-blur-xl border border-white p-8 md:p-12 rounded-[2.5rem] shadow-sm relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                                <div className="relative z-10">
-                                    <h2 className="text-3xl font-display font-bold text-graphite-900 mb-6 flex items-center gap-3">
-                                        <BookOpen className="text-indigo-600" size={28} />
-                                        SSC Exam Syllabus & Pattern
-                                    </h2>
-                                    <div className="space-y-6">
-                                        <p className="text-graphite-700 leading-relaxed font-medium">
-                                            The Staff Selection Commission decides on the SSC exam pattern and syllabus for all related posts. Candidates must be aware of the whole exam pattern and syllabus to avoid last-minute confusion.
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full text-left">
+                                                <thead>
+                                                    <tr className="bg-graphite-900 text-white rounded-xl overflow-hidden">
+                                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">Examination Stage</th>
+                                                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">Details & Content</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-graphite-100">
+                                                    {DETAILED_PATTERNS[activePatternTab].table.map((row, i) => (
+                                                        <tr key={i} className="hover:bg-blue-50/30 transition-colors group">
+                                                            <td className="px-6 py-5">
+                                                                <span className="text-sm font-black text-graphite-900 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{row.stage}</span>
+                                                            </td>
+                                                            <td className="px-6 py-5 text-sm text-graphite-600 font-medium leading-relaxed">
+                                                                {row.info}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Eligibility Section */}
+                            <section id="eligibility" className="scroll-mt-32">
+                                <div className="flex items-center gap-3 mb-10">
+                                    <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-xl shadow-emerald-100">
+                                        <GraduationCap className="text-white" size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-3xl font-display font-bold text-graphite-900">Eligibility Criteria</h2>
+                                        <p className="text-sm text-graphite-500 font-medium font-hindi">पात्रता मापदंड</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    {ELIGIBILITY_DATA.map((item, i) => (
+                                        <div key={i} className="bg-white/60 backdrop-blur-md p-8 rounded-[2.5rem] border border-white hover:bg-white transition-all group">
+                                            <h3 className="text-xl font-black text-graphite-900 mb-6 flex items-center justify-between">
+                                                {item.exam}
+                                                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                    <Shield size={20} />
+                                                </div>
+                                            </h3>
+                                            <div className="space-y-4">
+                                                {item.criteria.map((c, j) => (
+                                                    <div key={j} className="flex flex-col gap-1">
+                                                        <span className="text-[10px] font-black text-graphite-400 uppercase tracking-widest">{c.label}</span>
+                                                        <span className="text-sm font-bold text-graphite-700">{c.value}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+
+                            {/* Exam Dates Section */}
+                            <section id="dates" className="scroll-mt-32">
+                                <div className="flex items-center gap-3 mb-10">
+                                    <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-100">
+                                        <Calendar className="text-white" size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-3xl font-display font-bold text-graphite-900">Exam Dates & Timeline</h2>
+                                        <p className="text-sm text-graphite-500 font-medium font-hindi">परीक्षा तिथियां और समयरेखा</p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-graphite-900 rounded-[2.5rem] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl">
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+
+                                    <div className="overflow-x-auto relative z-10">
+                                        <table className="w-full text-left">
+                                            <thead>
+                                                <tr className="border-b border-white/10">
+                                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-orange-400">Exam Type</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Release Date</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Deadline</th>
+                                                    <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white/40">Exam Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5">
+                                                {EXAM_TIMELINE.map((item, i) => (
+                                                    <tr key={i} className="hover:bg-white/5 transition-colors">
+                                                        <td className="px-6 py-5 font-black text-sm">{item.exam}</td>
+                                                        <td className="px-6 py-5 text-sm font-bold text-white/60">{item.release}</td>
+                                                        <td className="px-6 py-5 text-sm font-bold text-white/40">{item.submission}</td>
+                                                        <td className="px-6 py-5 text-sm font-black text-orange-400">{item.date}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div className="mt-10 p-6 bg-white/5 rounded-3xl border border-white/10">
+                                        <div className="flex items-center gap-3 text-orange-400 mb-2">
+                                            <Bell size={18} />
+                                            <span className="text-sm font-black uppercase tracking-wider">Note for Candidates</span>
+                                        </div>
+                                        <p className="text-sm text-white/60 font-medium leading-relaxed">
+                                            All dates mentioned above are tentative and subject to change based on official SSC notifications. We recommend checking the official ssc.gov.in website regularly for the latest updates.
                                         </p>
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            <div className="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100">
-                                                <h4 className="font-bold text-indigo-900 mb-2">Annual Updates</h4>
-                                                <p className="text-sm text-indigo-800/80 font-medium">Exams are conducted annually for all posts. The syllabus is typically revised every 3-4 years to stay relevant with current standards.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Syllabus Section */}
+                            <section id="syllabus" className="scroll-mt-32">
+                                <div className="flex items-center gap-3 mb-10">
+                                    <div className="w-12 h-12 bg-blue-700 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-100">
+                                        <BookOpen className="text-white" size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-3xl font-display font-bold text-graphite-900">Detailed Syllabus</h2>
+                                        <p className="text-sm text-graphite-500 font-medium font-hindi">विस्तृत पाठ्यक्रम</p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white/80 backdrop-blur-xl border border-white/80 rounded-[2.5rem] shadow-xl overflow-hidden">
+                                    {/* Syllabus Tabs */}
+                                    <div className="flex overflow-x-auto no-scrollbar border-b border-graphite-100 bg-graphite-50/30">
+                                        {DETAILED_SYLLABUS.map((s, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => setActiveSyllabusTab(i)}
+                                                className={cn(
+                                                    "px-8 py-5 text-sm font-bold whitespace-nowrap transition-all relative",
+                                                    activeSyllabusTab === i
+                                                        ? "text-blue-600"
+                                                        : "text-graphite-400 hover:text-graphite-600"
+                                                )}
+                                            >
+                                                {s.exam}
+                                                {activeSyllabusTab === i && (
+                                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-blue-600"></div>
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div className="p-8 space-y-8">
+                                        {DETAILED_SYLLABUS[activeSyllabusTab].tiers.map((tier, i) => (
+                                            <div key={i} className="group">
+                                                <h3 className="text-lg font-black text-graphite-900 mb-4 flex items-center gap-2">
+                                                    <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs">{i + 1}</span>
+                                                    {tier.title}
+                                                </h3>
+                                                <div className="grid md:grid-cols-2 gap-4">
+                                                    {tier.subjects.map((sub, j) => (
+                                                        <div key={j} className="p-5 bg-graphite-50/50 rounded-2xl border border-graphite-100 group-hover:border-blue-100 transition-colors">
+                                                            <h4 className="font-bold text-graphite-900 mb-2">{sub.name}</h4>
+                                                            <p className="text-xs text-graphite-500 leading-relaxed font-medium">{sub.topics}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
-                                            <div className="p-6 bg-emerald-50/50 rounded-3xl border border-emerald-100">
-                                                <h4 className="font-bold text-emerald-900 mb-2">Career Focus</h4>
-                                                <p className="text-sm text-emerald-800/80 font-medium">SSC and Bank salaries differ significantly. It is advised to pursue your career in the field that aligns best with your interests.</p>
+                                        ))}
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* FAQ Section */}
+                            <section id="faq" className="scroll-mt-32">
+                                <div className="flex items-center gap-3 mb-10">
+                                    <div className="w-12 h-12 bg-graphite-900 rounded-2xl flex items-center justify-center shadow-xl shadow-graphite-100">
+                                        <HelpCircle className="text-white" size={24} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-3xl font-display font-bold text-graphite-900">Common FAQs</h2>
+                                        <p className="text-sm text-graphite-500 font-medium font-hindi">सामान्य प्रश्न एवं उत्तर</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {SSC_FAQ.map((faq, i) => (
+                                        <div key={i} className="bg-white/60 backdrop-blur-md rounded-3xl border border-white overflow-hidden hover:bg-white transition-all group">
+                                            <div className="p-6 cursor-pointer flex items-center justify-between gap-4">
+                                                <h3 className="text-sm font-bold text-graphite-900 leading-relaxed">{faq.q}</h3>
+                                                <ChevronRight size={18} className="text-graphite-300 group-hover:text-blue-600 transition-colors" />
+                                            </div>
+                                            <div className="px-6 pb-6 border-t border-graphite-50 mt-[-1px]">
+                                                <p className="pt-4 text-sm text-graphite-600 leading-relaxed font-medium">
+                                                    {faq.a}
+                                                </p>
                                             </div>
                                         </div>
-                                    </div>
+                                    ))}
                                 </div>
-                            </div>
+                            </section>
+
                         </div>
-
-                        {/* Qualifications */}
-                        <div className="bg-graphite-900 text-white p-10 md:p-14 rounded-[3rem] shadow-2xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-
-                            <div className="flex items-center gap-4 mb-10">
-                                <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10">
-                                    <GraduationCap size={32} />
-                                </div>
-                                <h2 className="text-3xl font-bold tracking-tight">Eligibility Criteria</h2>
-                            </div>
-
-                            <div className="space-y-10">
-                                <div className="grid md:grid-cols-2 gap-10">
-                                    <div>
-                                        <h4 className="text-blue-400 font-bold uppercase tracking-widest text-xs mb-4">Age Limits</h4>
-                                        <ul className="space-y-4">
-                                            <li className="flex flex-col">
-                                                <span className="text-lg font-bold">18 - 32 Years</span>
-                                                <span className="text-sm text-white/50">Junior Statistical Officer</span>
-                                            </li>
-                                            <li className="flex flex-col">
-                                                <span className="text-lg font-bold">20 - 30 Years</span>
-                                                <span className="text-sm text-white/50">ASO in CSS, Railways, MEA, IB</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h4 className="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-4">Education</h4>
-                                        <ul className="space-y-4">
-                                            <li className="flex flex-col">
-                                                <span className="text-lg font-bold">Bachelor's Degree</span>
-                                                <span className="text-sm text-white/50">Mandatory for all 20+ job roles</span>
-                                            </li>
-                                            <li className="flex flex-col">
-                                                <span className="text-lg font-bold">60% in Mathematics</span>
-                                                <span className="text-sm text-white/50">Requirement for JSO (or Stats degree)</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>

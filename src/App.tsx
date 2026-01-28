@@ -13,8 +13,11 @@ import FAQ from "./pages/FAQ";
 import Support from "./pages/Support";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
 import SSCHome from "./pages/ssc/Home";
 import AboutSSC from "./pages/ssc/About";
+import CATHome from "./pages/cat/Home";
+import AboutCAT from "./pages/cat/About";
 
 const queryClient = new QueryClient();
 
@@ -34,11 +37,17 @@ const App = () => (
           <Route path="/support" element={<Support />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/cookies" element={<Cookies />} />
 
           {/* SSC Routes */}
           <Route path="/ssc" element={<SSCHome />} />
           <Route path="/about-ssc" element={<AboutSSC />} />
           <Route path="/plans-ssc" element={<Navigate to="/plans?category=SSC" replace />} />
+
+          {/* CAT Routes */}
+          <Route path="/cat" element={<CATHome />} />
+          <Route path="/about-cat" element={<AboutCAT />} />
+          <Route path="/plans-cat" element={<Navigate to="/plans?category=SSC" replace />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

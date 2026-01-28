@@ -16,14 +16,37 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'SSC', href: '/ssc' },
-    { name: 'About SSC', href: '/about-ssc' },
-    { name: 'Plans', href: '/plans' },
-    { name: 'FAQ', href: '/faq' },
-    { name: 'Support', href: '/support' },
-  ];
+  const getNavLinks = () => {
+    const sscPaths = ['/ssc', '/about-ssc'];
+    const catPaths = ['/cat', '/about-cat'];
+
+    if (sscPaths.some(path => location.pathname.startsWith(path))) {
+      return [
+        { name: 'Home', href: '/' },
+        { name: 'SSC', href: '/ssc' },
+        { name: 'About SSC', href: '/about-ssc' },
+        { name: 'Plans', href: '/plans' },
+      ];
+    }
+
+    if (catPaths.some(path => location.pathname.startsWith(path))) {
+      return [
+        { name: 'Home', href: '/' },
+        { name: 'CAT', href: '/cat' },
+        { name: 'About CAT', href: '/about-cat' },
+        { name: 'Plans', href: '/plans' },
+      ];
+    }
+
+    return [
+      { name: 'Home', href: '/' },
+      { name: 'SSC', href: '/ssc' },
+      { name: 'CAT', href: '/cat' },
+      { name: 'Plans', href: '/plans' },
+    ];
+  };
+
+  const currentLinks = getNavLinks();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -53,7 +76,7 @@ const Navbar = () => {
         {/* Desktop Navigation - Dark Pill Style */}
         <div className="hidden md:flex items-center">
           <div className="flex items-center gap-1 bg-graphite-900/90 backdrop-blur-md rounded-full px-2 py-1.5 shadow-xl border border-white/10">
-            {navLinks.map((link) => (
+            {currentLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
@@ -81,7 +104,7 @@ const Navbar = () => {
               size="sm"
               className="bg-gradient-to-r from-rose-400 to-pink-400 hover:from-rose-500 hover:to-pink-500 text-white font-bold rounded-full px-6 flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20"
             >
-              Sign Up Free
+              Free Mock Test
             </Button>
           </Link>
         </div>
@@ -99,7 +122,7 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white/98 backdrop-blur-xl mt-2 mx-4 rounded-2xl p-4 animate-scale-in shadow-xl border border-graphite-100 overflow-hidden">
           <div className="flex flex-col gap-2">
-            {navLinks.map((link) => (
+            {currentLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
